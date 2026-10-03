@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PP CAFE — South Indian Tea House</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  :root{
+    --brown:#2E1B12; --brown-deep:#1C1210; --cream:#F3E7D3; --off:#FBF6ED;
+    --gold:#B8894F; --gold-soft:#D9B679; --char:#171310; --moss:#5C6B4A;
+    --line: rgba(243,231,211,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; scroll-padding-top: env(safe-area-inset-top,0px);}
+  body{background:var(--brown); color:var(--cream); font-family:'Inter',sans-serif; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); overflow-x:hidden;}
+  h1,h2,h3,.serif{font-family:'Fraunces',serif;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+  @media(min-width:768px){.wrap{padding:0 48px;}}
+
+  /* NAV */
+  nav{position:fixed; top:0; left:0; right:0; z-index:50; padding-top:calc(18px + env(safe-area-inset-top,0px)); padding-bottom:18px; transition:background .4s, box-shadow .4s;}
+  nav.scrolled{background:rgba(23,19,16,0.92); backdrop-filter:blur(8px); box-shadow:0 1px 0 var(--line);}
+  .navrow{display:flex; align-items:center; justify-content:space-between;}
+  .logo{font-size:22px; letter-spacing:0.3px; font-weight:500;}
+  .navlinks{display:none; gap:32px; font-size:14.5px; color:var(--cream); opacity:.85;}
+  @media(min-width:860px){.navlinks{display:flex;}}
+  .navlinks a:hover{color:var(--gold-soft);}
+  .navlinks a.active{color:var(--gold-soft);}
+  .page{display:none;}
+  .page.active{display:block;}
+  .btn-wa{background:var(--moss); color:var(--off); padding:10px 18px; border-radius:3px; font-size:14px; font-weight:500; display:inline-flex; align-items:center; gap:8px;}
+  .btn-wa:hover{background:#4c5940;}
+
+  /* HERO */
+  #hero{position:relative; height:100svh; display:flex; align-items:center; justify-content:center; overflow:hidden;
+    background: radial-gradient(circle at 50% 30%, #3a2416 0%, #1c1210 72%);}
+  #cupStage{position:relative; width:min(78vw,340px); height:min(78vw,340px); display:flex; align-items:flex-end; justify-content:center;}
+  .steam{position:absolute; bottom:62%; width:6px; border-radius:6px; background:linear-gradient(to top, rgba(243,231,211,0.55), transparent); filter:blur(2px);}
+  .cup{position:relative; width:100%; }
+  .cup svg{width:100%; display:block;}
+  #heroText{position:absolute; text-align:center; z-index:2; top:12%; left:50%; transform:translateX(-50%); width:90%;}
+  #heroText h1{font-size:clamp(34px,7vw,64px); font-weight:500; letter-spacing:.5px; line-height:1.05;}
+  #heroText p{margin-top:14px; color:var(--gold-soft); font-size:clamp(13px,2vw,16px); font-weight:400;}
+  .scrollhint{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); font-size:12px; color:rgba(243,231,211,.55); letter-spacing:1px;}
+
+  section{padding:100px 0;}
+  .eyebrow{color:var(--gold-soft); font-size:13.5px; margin-bottom:10px;}
+  .headline{font-size:clamp(28px,4.2vw,42px); font-weight:500; max-width:640px; line-height:1.1;}
+  .lede{max-width:520px; color:rgba(243,231,211,.75); font-size:16px; line-height:1.7; margin-top:18px;}
+
+  /* ABOUT */
+  #about .grid{display:grid; grid-template-columns:1fr; gap:48px; align-items:center;}
+  @media(min-width:860px){#about .grid{grid-template-columns:1fr 1fr;}}
+  .stat-row{display:flex; gap:40px; margin-top:36px;}
+  .stat b{display:block; font-family:'Fraunces',serif; font-size:30px; color:var(--gold-soft);}
+  .stat span{font-size:13px; color:rgba(243,231,211,.6);}
+  .about-art{aspect-ratio:4/5; border-radius:2px; background:
+    radial-gradient(circle at 30% 20%, #4a2f1c, transparent 55%),
+    linear-gradient(160deg, #3a2416, #1c1210 75%); position:relative; overflow:hidden;}
+  .about-art .ring{position:absolute; border:1px solid var(--line); border-radius:50%;}
+
+  /* MENU */
+  #menu{background:var(--off); color:var(--char);}
+  #menu .eyebrow{color:var(--moss);}
+  .tabs{display:flex; gap:8px; margin:36px 0 8px; overflow-x:auto; padding-bottom:4px;}
+  .tab{padding:10px 20px; border:1px solid rgba(23,19,16,.18); border-radius:999px; font-size:14px; white-space:nowrap; cursor:pointer; background:transparent; font-family:inherit;}
+  .tab.active{background:var(--brown); color:var(--off); border-color:var(--brown);}
+  .menu-list{margin-top:28px; display:none;}
+  .menu-list.active{display:block;}
+  .mitem{display:flex; justify-content:space-between; gap:20px; padding:18px 0; border-bottom:1px solid rgba(23,19,16,.12);}
+  .mitem .name{font-family:'Fraunces',serif; font-size:18px;}
+  .mitem .desc{font-size:13.5px; color:rgba(23,19,16,.6); margin-top:4px; max-width:420px;}
+  .mitem .price{font-family:'Fraunces',serif; font-size:17px; color:var(--moss); white-space:nowrap;}
+
+  /* ORDER ONLINE */
+  #order{background:var(--brown-deep);}
+  .order-cards{display:grid; grid-template-columns:1fr; gap:16px; margin-top:36px;}
+  @media(min-width:640px){.order-cards{grid-template-columns:1fr 1fr;}}
+  .ocard{border:1px solid var(--line); padding:28px; border-radius:3px; display:flex; flex-direction:column; gap:14px;}
+  .ocard b{font-family:'Fraunces',serif; font-size:20px;}
+  .ocard a.cta{align-self:flex-start; border-bottom:1px solid var(--gold-soft); color:var(--gold-soft); font-size:14px; padding-bottom:2px;}
+
+  /* RESERVE + MAP */
+  #visit{display:grid; grid-template-columns:1fr; gap:0;}
+  @media(min-width:960px){#visit{grid-template-columns:1fr 1fr;}}
+  .visit-pane{padding:80px 32px;}
+  @media(min-width:768px){.visit-pane{padding:100px 48px;}}
+  #reserve{background:var(--brown);}
+  #locate{background:#241811; min-height:420px; display:flex; flex-direction:column;}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:12.5px; color:rgba(243,231,211,.65); margin-bottom:6px;}
+  .field input, .field select{width:100%; background:transparent; border:1px solid rgba(243,231,211,.28); color:var(--off); padding:11px 12px; border-radius:3px; font-family:inherit; font-size:14.5px;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .submit{margin-top:6px; width:100%; background:var(--gold); color:var(--char); padding:13px; border:none; border-radius:3px; font-weight:600; font-size:14.5px; cursor:pointer; font-family:inherit;}
+  .submit:hover{background:var(--gold-soft);}
+  .mapbox{flex:1; min-height:280px; border:1px solid var(--line); filter:grayscale(0.15) sepia(0.12);}
+  .mapbox iframe{width:100%; height:100%; border:0; display:block; min-height:280px;}
+  .addr{margin-top:18px; font-size:14px; color:rgba(243,231,211,.8); line-height:1.7;}
+  .addr a{color:var(--gold-soft); border-bottom:1px solid rgba(217,182,121,.4);}
+
+  /* INSTAGRAM */
+  #insta{background:var(--off); color:var(--char);}
+  .igrid{display:grid; grid-template-columns:repeat(2,1fr); gap:6px; margin-top:32px;}
+  @media(min-width:640px){.igrid{grid-template-columns:repeat(4,1fr);}}
+  .itile{aspect-ratio:1; position:relative; overflow:hidden;}
+  .itile div{position:absolute; inset:0; background:linear-gradient(135deg,var(--brown),var(--moss)); opacity:.85;}
+  .itile:nth-child(2n) div{background:linear-gradient(135deg,var(--gold),var(--brown));}
+  .itile a{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px; opacity:0; transition:opacity .25s; background:rgba(0,0,0,.3);}
+  .itile:hover a{opacity:1;}
+
+  footer{background:var(--char); padding:48px 0 calc(28px + env(safe-area-inset-bottom,0px));}
+  .foot-row{display:flex; flex-wrap:wrap; gap:24px; justify-content:space-between; align-items:center; font-size:13px; color:rgba(243,231,211,.55);}
+  .foot-links{display:flex; gap:18px;}
+  .foot-links a:hover{color:var(--gold-soft);}
+
+  #waFloat{position:fixed; bottom:calc(22px + env(safe-area-inset-bottom,0px)); right:22px; z-index:60; background:var(--moss); color:#fff; width:54px; height:54px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.35);}
+  #waFloat:hover{background:#4c5940;}
+</style>
+</head>
+<body>
+
+<nav id="siteNav"><div class="wrap navrow">
+  <div class="logo serif">PP <span style="color:var(--gold-soft)">CAFE</span></div>
+  <div class="navlinks">
+    <a href="#home" data-page="home" class="active">Home</a><a href="#menu" data-page="menu">Menu</a><a href="#order" data-page="order">Order</a><a href="#visit" data-page="visit">Reserve</a><a href="#insta" data-page="insta">Instagram</a>
+  </div>
+  <a class="btn-wa" href="https://wa.me/919999999999?text=Hi%20PP%20Cafe%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener">Book on WhatsApp</a>
+</div></nav>
+
+<div class="page active" id="page-home">
+<section id="hero">
+  <div id="heroText">
+    <h1>Chai, brewed slow.<br>Served warm.</h1>
+    <p>A modern South Indian tea house, steeped in Kerala tradition.</p>
+  </div>
+  <div id="cupStage">
+    <div class="steam" style="left:44%;"></div>
+    <div class="steam" style="left:52%; height:70%;"></div>
+    <div class="steam" style="left:60%;"></div>
+    <div class="cup">
+      <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="150" cy="78" rx="92" ry="16" fill="#B8894F" opacity="0.9"/>
+        <rect id="teaLevel" x="66" y="82" width="168" height="60" fill="#7A4A1E"/>
+        <path d="M60 80 L78 220 Q150 242 222 220 L240 80 Z" fill="none" stroke="#D9B679" stroke-width="3"/>
+        <ellipse cx="150" cy="80" rx="90" ry="14" fill="none" stroke="#D9B679" stroke-width="3"/>
+        <path d="M240 110 q40 5 40 40 q0 38 -42 40" fill="none" stroke="#D9B679" stroke-width="3"/>
+      </svg>
+    </div>
+  </div>
+  <div class="scrollhint">SCROLL</div>
+</section>
+
+<section id="about">
+  <div class="wrap grid">
+    <div>
+      <div class="eyebrow">Our story</div>
+      <h2 class="headline">Rooted in Kerala's tea-shop culture, poured for today.</h2>
+      <p class="lede">PP Cafe began as a single brass kettle and a wooden bench by the road. Today the same slow-brewed chai, the same hand-pulled froth, meets a room built for lingering evenings — brass fittings, warm light, and the smell of cardamom drifting from the kitchen.</p>
+      <div class="stat-row">
+        <div class="stat"><b>1998</b><span>Since</span></div>
+        <div class="stat"><b>12+</b><span>Signature brews</span></div>
+        <div class="stat"><b>4.8</b><span>Rated by regulars</span></div>
+      </div>
+    </div>
+    <div class="about-art">
+      <div class="ring" style="width:70%; height:70%; top:15%; left:15%;"></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="page" id="page-menu">
+<section id="menu">
+  <div class="wrap">
+    <div class="eyebrow">Digital menu</div>
+    <h2 class="headline">What's brewing today</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="tea">Tea &amp; Chai</button>
+      <button class="tab" data-tab="snacks">Snacks</button>
+      <button class="tab" data-tab="sweets">Sweets</button>
+    </div>
+
+    <div class="menu-list active" id="tea">
+      <div class="mitem"><div><div class="name">Kerala Cutting Chai</div><div class="desc">Strong, milky, poured from height</div></div><div class="price">₹30</div></div>
+      <div class="mitem"><div><div class="name">Cardamom Masala Chai</div><div class="desc">Whole spices, slow-simmered</div></div><div class="price">₹45</div></div>
+      <div class="mitem"><div><div class="name">Sulaimani</div><div class="desc">Black tea, lemon, cloves</div></div><div class="price">₹40</div></div>
+      <div class="mitem"><div><div class="name">Ginger Tea</div><div class="desc">Fresh crushed ginger</div></div><div class="price">₹35</div></div>
+    </div>
+    <div class="menu-list" id="snacks">
+      <div class="mitem"><div><div class="name">Parippu Vada</div><div class="desc">Crisp lentil fritters</div></div><div class="price">₹40</div></div>
+      <div class="mitem"><div><div class="name">Banana Bajji</div><div class="desc">Battered, fried, served hot</div></div><div class="price">₹35</div></div>
+      <div class="mitem"><div><div class="name">Kerala Egg Puffs</div><div class="desc">Flaky pastry, spiced egg</div></div><div class="price">₹50</div></div>
+    </div>
+    <div class="menu-list" id="sweets">
+      <div class="mitem"><div><div class="name">Unniyappam</div><div class="desc">Jaggery rice fritters</div></div><div class="price">₹45</div></div>
+      <div class="mitem"><div><div class="name">Palada Payasam</div><div class="desc">Slow-cooked milk pudding</div></div><div class="price">₹60</div></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="page" id="page-order">
+<section id="order">
+  <div class="wrap">
+    <div class="eyebrow">Order online</div>
+    <h2 class="headline">Craving it at home?</h2>
+    <div class="order-cards">
+      <div class="ocard"><b>Swiggy</b><span style="font-size:14px; color:rgba(243,231,211,.7)">Get PP Cafe delivered through Swiggy.</span><a class="cta" href="https://www.swiggy.com/" target="_blank" rel="noopener">Order on Swiggy</a></div>
+      <div class="ocard"><b>Zomato</b><span style="font-size:14px; color:rgba(243,231,211,.7)">Get PP Cafe delivered through Zomato.</span><a class="cta" href="https://www.zomato.com/" target="_blank" rel="noopener">Order on Zomato</a></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="page" id="page-visit">
+<section id="visit" style="padding:0;">
+  <div class="visit-pane" id="reserve">
+    <div class="eyebrow">Reserve a table</div>
+    <h2 class="headline" style="font-size:32px;">Save your evening spot</h2>
+    <form id="resForm" style="margin-top:30px;">
+      <div class="field"><label for="rName">Name</label><input id="rName" required placeholder="Your name"></div>
+      <div class="field-row">
+        <div class="field"><label for="rDate">Date</label><input id="rDate" type="date" required></div>
+        <div class="field"><label for="rTime">Time</label><input id="rTime" type="time" required></div>
+      </div>
+      <div class="field"><label for="rGuests">Guests</label><select id="rGuests"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5+</option></select></div>
+      <button class="submit" type="submit">Reserve via WhatsApp</button>
+    </form>
+  </div>
+  <div class="visit-pane" id="locate">
+    <div class="eyebrow">Find us</div>
+    <h2 class="headline" style="font-size:32px;">Come sit a while</h2>
+    <div class="mapbox" style="margin-top:26px;">
+      <iframe src="https://www.google.com/maps?q=Thrissur%20Kerala%20tea%20cafe&output=embed" loading="lazy"></iframe>
+    </div>
+    <div class="addr">MG Road, Thrissur, Kerala &nbsp;·&nbsp; Open 7am – 10pm<br>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Thrissur+Kerala" target="_blank" rel="noopener">Get directions →</a>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="page" id="page-insta">
+<section id="insta">
+  <div class="wrap">
+    <div class="eyebrow">@ppcafe</div>
+    <h2 class="headline" style="font-size:32px;">Follow along</h2>
+    <div class="igrid">
+      <div class="itile"><div></div><a href="https://instagram.com/ppcafe" target="_blank" rel="noopener">View post</a></div>
+      <div class="itile"><div></div><a href="https://instagram.com/ppcafe" target="_blank" rel="noopener">View post</a></div>
+      <div class="itile"><div></div><a href="https://instagram.com/ppcafe" target="_blank" rel="noopener">View post</a></div>
+      <div class="itile"><div></div><a href="https://instagram.com/ppcafe" target="_blank" rel="noopener">View post</a></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<footer><div class="wrap foot-row">
+  <div>© 2026 PP Cafe, Thrissur</div>
+  <div class="foot-links">
+    <a href="https://instagram.com/ppcafe" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://wa.me/919999999999" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="#home" data-page="home">Home</a>
+  </div>
+</div></footer>
+
+<a id="waFloat" href="https://wa.me/919999999999?text=Hi%20PP%20Cafe" target="_blank" rel="noopener" aria-label="WhatsApp us">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.1a8.1 8.1 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.1 8.1 0 1 1 12 20.1Zm4.4-6.1c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.4c.1-.1.2-.2.2-.4.1-.2 0-.3 0-.4L9.9 8c-.1-.4-.3-.3-.5-.3h-.4c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.1s.9 2.4 1.1 2.6c.1.2 1.8 2.8 4.4 3.8.6.3 1.1.4 1.5.5.6.2 1.2.1 1.6.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.2-.4-.3Z"/></svg>
+</a>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// nav bg on scroll
+const nav = document.getElementById('siteNav');
+window.addEventListener('scroll', ()=>{ nav.classList.toggle('scrolled', window.scrollY > 40); });
+
+// page router
+const pages = ['home','menu','order','visit','insta'];
+function goTo(name){
+  if(!pages.includes(name)) name = 'home';
+  pages.forEach(p=>{
+    document.getElementById('page-'+p).classList.toggle('active', p===name);
+  });
+  document.querySelectorAll('[data-page]').forEach(a=>{
+    a.classList.toggle('active', a.dataset.page===name);
+  });
+  nav.classList.toggle('scrolled', name!=='home');
+  window.scrollTo({top:0, behavior:'instant'});
+  requestAnimationFrame(()=>ScrollTrigger.refresh());
+}
+document.querySelectorAll('[data-page]').forEach(a=>{
+  a.addEventListener('click', (e)=>{ e.preventDefault(); history.pushState(null,'','#'+a.dataset.page); goTo(a.dataset.page); });
+});
+window.addEventListener('popstate', ()=>goTo(location.hash.replace('#','')||'home'));
+goTo(location.hash.replace('#','')||'home');
+
+// hero cup + steam animation
+gsap.to('#teaLevel', {
+  attr:{height:0, y:142}, ease:'none',
+  scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:0.6}
+});
+gsap.to('#cupStage', {
+  scale:1.15, y:-30, ease:'none',
+  scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:0.6}
+});
+gsap.to('#heroText', {
+  opacity:0, y:-40, ease:'none',
+  scrollTrigger:{trigger:'#hero', start:'top top', end:'50% top', scrub:0.6}
+});
+document.querySelectorAll('.steam').forEach((s,i)=>{
+  gsap.to(s, {y:-70-i*10, opacity:0, repeat:-1, duration:2.4+i*0.3, delay:i*0.4, ease:'power1.out',
+    onRepeat:()=>gsap.set(s,{y:0,opacity:0.55})});
+});
+
+// menu tabs
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.menu-list').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+// reservation -> whatsapp
+document.getElementById('resForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('rName').value;
+  const date = document.getElementById('rDate').value;
+  const time = document.getElementById('rTime').value;
+  const guests = document.getElementById('rGuests').value;
+  const msg = `Hi PP Cafe, I'd like to reserve a table.%0AName: ${encodeURIComponent(name)}%0ADate: ${date}%0ATime: ${time}%0AGuests: ${guests}`;
+  window.open(`https://wa.me/919999999999?text=${msg}`, '_blank');
+});
+</script>
+</body>
+</html>
